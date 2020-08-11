@@ -1,0 +1,17 @@
+.merlin
+node_modules/
+_build
+_esy
+_release
+*.byte
+*.native
+*.install
+.bash_history
+.bundle
+vendor/bundle
+.env
+webspicy/rspec.xml
+Dockerfile.*.log
+Dockerfile.*.built
+Dockerfile.*.pushed
+

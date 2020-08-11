@@ -1,0 +1,11 @@
+node_modules
+.bash_history
+.bundle
+.env
+webspicy/rspec.xml
+.git
+docker-compose.yml
+Dockerfile
+.gitignore
+.dockerignore
+Makefile
