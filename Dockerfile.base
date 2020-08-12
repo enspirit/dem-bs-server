@@ -38,8 +38,10 @@ USER opam
 
 # RUN chown -R opam /usr/lib/node_modules
 
+# esy is an npm like tool for Reason
 RUN npm install -g esy@latest
 
 COPY --chown=opam:opam . /home/opam
 
+# installs dependencies and build project
 RUN esy

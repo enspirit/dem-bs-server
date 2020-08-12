@@ -1,3 +1,12 @@
 FROM yguyot/dem-server:esyrunbase
 
-CMD inotifywait -m -r /home/opam && esy build && esy start
+# CMD inotifywait -m -r /home/opam/bin /home/opam/lib /home/opam/dune-project /home/opam/package.json && esy --verbosity=debug build && esy --verbosity=debug start
+# CMD inotifywait -m -r /home/opam/bin /home/opam/lib /home/opam/dune-project /home/opam/package.json && esy --verbosity=debug build
+
+RUN esy --verbosity=info
+
+RUN esy build --verbosity=info
+
+# CMD esy --verbosity=info watch
+
+CMD esy --verbosity=info dune build -w
