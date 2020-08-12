@@ -1,6 +1,6 @@
 version: '2'
 services:
-  dem-bs-server:
+  dem-server:
     build:
       context: .
       dockerfile: Dockerfile
