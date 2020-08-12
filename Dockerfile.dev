@@ -1,0 +1,3 @@
+FROM yguyot/dem-server:esyrunbase
+
+CMD inotifywait -m -r /home/opam && esy build && esy start
