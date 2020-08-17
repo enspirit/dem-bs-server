@@ -1,8 +1,24 @@
 version: '2'
 services:
-  dem-bs-server:
+  dem-server.dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./bin:/home/opam/bin
+      - ./lib:/home/opam/lib
+      - ./lib:/home/opam/test
+      - ./dune-project:/home/opam/dune-project
+      - ./package.json:/home/opam/package.json
+  dem-server:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ./bin:/home/opam/bin
+      - ./lib:/home/opam/lib
+      - ./lib:/home/opam/test
+      - ./dune-project:/home/opam/dune-project
+      - ./package.json:/home/opam/package.json
     ports:
       - "3000:3000"

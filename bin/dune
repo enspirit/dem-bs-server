@@ -1,4 +1,4 @@
 (executable
- (name Hello)
- (public_name Hello)
+ (name Main)
+ (public_name Main)
  (libraries opium))

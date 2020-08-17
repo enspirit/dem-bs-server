@@ -17,40 +17,58 @@ MINOR = $(shell echo '${TINY}' | cut -f'1-2' -d'.')
 ### global
 
 clean:
-	rm -rf Gemfile.lock Dockerfile.log Dockerfile.built lib node_modules _esy esy.lock
+	rm -rf Gemfile.lock Dockerfile.*.log Dockerfile.*.built lib node_modules _esy esy.lock
 
 ps:
 	docker-compose ps
 
+Dockerfile.base.built: Dockerfile.base
+	docker build -t yguyot/dem-server:esyrunbase -f Dockerfile.base . | tee Dockerfile.base.log
+	touch Dockerfile.base.built
+
+Dockerfile.dev.built: Dockerfile.dev
+	docker build -t enspirit/dem-server:dev -f Dockerfile.dev . | tee Dockerfile.dev.log
+	touch Dockerfile.dev.built
+
 Dockerfile.built: Dockerfile
-	docker build -t enspirit/dem-bs-server -f Dockerfile . | tee Dockerfile.log
+	docker build -t enspirit/dem-server -f Dockerfile . | tee Dockerfile.log
 	touch Dockerfile.built
 
 down:
-	docker-compose stop dem-bs-server
+	docker-compose stop dem-server dem-server.dev
+
+base.image: Dockerfile.base.built
+
+Dockerfile.base.pushed: Dockerfile.base.built
+	docker tag yguyot/dem-server:esyrunbase $(DOCKER_REGISTRY)/yguyot/dem-server:esyrunbase
+	docker push $(DOCKER_REGISTRY)/yguyot/dem-server:esyrunbase | tee -a Dockerfile.base.log
+
+base.push: Dockerfile.base.pushed
+
+dev.image: Dockerfile.dev.built
 
 image: Dockerfile.built
 
-up: image
-	docker-compose up -d dem-bs-server
+up:
+	docker-compose up -d dem-server
+
+dev.up:
+	docker-compose up -d dem-server.dev
+
+dev:
+	docker run -v ~/dem-bs-server/bin:/home/opam/bin -it enspirit/dem-server:dev
 
 restart:
-	docker-compose restart dem-bs-server
+	docker-compose restart dem-server
+
+dev.restart:
+	docker-compose restart dem-server.dev
 
 logs:
-	docker-compose logs -f dem-bs-server
+	docker-compose logs -f dem-server
+
+dev.logs:
+	docker-compose logs -f dem-server.dev
 
 bash:
-	docker-compose exec dem-bs-server bash
-
-Dockerfile.pushed: Dockerfile.built
-	docker tag enspirit/dem-bs-server $(DOCKER_REGISTRY)/enspirit/dem-bs-server:${TINY}
-	docker push $(DOCKER_REGISTRY)/enspirit/dem-bs-server:$(TINY) | tee -a Dockerfile.log
-	docker tag enspirit/dem-bs-server $(DOCKER_REGISTRY)/enspirit/dem-bs-server:${MINOR}
-	docker push $(DOCKER_REGISTRY)/enspirit/dem-bs-server:$(MINOR) | tee -a Dockerfile.log
-	# not used until 1.0
-	# docker tag enspirit/dem-bs-server $(DOCKER_REGISTRY)/enspirit/dem-bs-server:${MAJOR}
-	# docker push $(DOCKER_REGISTRY)/enspirit/dem-bs-server:$(MAJOR) | tee -a Dockerfile.log
-	touch Dockerfile.pushed
-
-push-image: Dockerfile.pushed
+	docker-compose exec dem-server bash
